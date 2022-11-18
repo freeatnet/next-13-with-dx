@@ -3,20 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prepare": "husky install || (echo 'WARN: husky not installed' && exit 0)",
+    "precommit": "lint-staged",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "clean": "rimraf .next node_modules/.cache tsconfig.tsbuildinfo",
+    "lint": "yarn lint:fix:all",
+    "lint:ci": "eslint --max-warnings=0",
+    "lint:ci:all": "yarn lint:ci .",
+    "lint:fix": "eslint --cache --cache-location ./node_modules/.cache/eslint --fix",
+    "lint:fix:all": "yarn lint:fix .",
+    "lint:precommit": "yarn lint:fix --max-warnings=0",
+    "tsc:ci": "tsc --noEmit --pretty --project tsconfig.json",
+    "tsc:precommit": "tsc --noEmit --pretty --project tsconfig.json"
   },
   "dependencies": {
+    "next": "13.0.4",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.4",
-    "next": "13.0.4",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
     "typescript": "4.9.3"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "yarn lint:precommit",
+      "bash -c 'yarn tsc:precommit'"
+    ]
   }
 }
